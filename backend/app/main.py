@@ -1,27 +1,29 @@
 from fastapi import FastAPI
-from apscheduler.schedulers.background import BackgroundScheduler
+from sqlalchemy.exc import OperationalError
 from app.core.scheduler import scheduler
 from app.database.session import engine
 from app.database.base import Base
 from app.routers import atos
-from app.models import ato, rpa_log
 from app.core import auth
 
 
 # Importar models para registrar no metadata
-
 
 app = FastAPI()
 
 from app.routers import rpa
 
 app.include_router(rpa.router)
+app.include_router(atos.router)
+
 
 @app.on_event("startup")
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except OperationalError as e:
+        raise RuntimeError("Falha ao conectar no banco. Verifique DATABASE_URL e se o Postgres está ativo.") from e
 
-app.include_router(atos.router)
 
 @app.on_event("startup")
 def start_scheduler():

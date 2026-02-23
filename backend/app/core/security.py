@@ -7,6 +7,15 @@ from app.core.settings import settings
 
 
 def criar_token(dados: dict) -> str:
+    """
+    Cria um token de acesso com base nos dados fornecidos.
+
+    Os dados fornecidos devem ser um dicionário com as informações
+    a serem incluídas no token. O token terá um campo "exp"
+    com a data de expiração do token, calculada com base
+    na hora atual mais o tempo de expiração definido
+    na configura da aplicação.
+    """
     to_encode = dados.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
     to_encode.update({"exp": expire})
