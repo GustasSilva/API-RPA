@@ -1,0 +1,19 @@
+# ambientes
+venv/
+.venv/
+backend/venv/
+backend/.venv/
+
+# cache python
+__pycache__/
+*.pyc
+
+# segredos
+.env
+*.env
+backend/.env
+
+# IDE/SO
+.vscode/
+.DS_Store
+Thumbs.db
