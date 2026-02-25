@@ -1,85 +1,88 @@
-# API-RPA | Coleta de Atos Normativos da Receita Federal
+# 🚀 API-RPA | Coleta de Atos Normativos da Receita Federal
 
 API em **FastAPI** integrada com um robô **RPA (Selenium)** para capturar atos normativos no portal da Receita Federal, enviar os dados via HTTP, persistir em **PostgreSQL**, oferecer **CRUD**, **dashboard agregado**, **logs de execução** e autenticação **JWT**.
 
-## Sumário
-1. Visão Geral
-2. Arquitetura
-3. Stack Tecnológica
-4. Funcionalidades
-5. Estrutura do Projeto
-6. Pré-requisitos
-7. Variáveis de Ambiente
-8. Como Executar
-9. Fluxo da Solução (RPA -> API -> Banco)
-10. Autenticação JWT
-11. Endpoints
-12. Modelo de Dados
-13. Logs
+---
+
+## 📚 Sumário
+
+1. Visão Geral  
+2. Arquitetura  
+3. Stack Tecnológica  
+4. Funcionalidades  
+5. Estrutura do Projeto  
+6. Pré-requisitos  
+7. Variáveis de Ambiente  
+8. Como Executar  
+9. Fluxo da Solução (RPA → API → Banco)  
+10. Autenticação JWT  
+11. Endpoints  
+12. Modelo de Dados  
+13. Logs  
 
 ---
 
 ## 1) Visão Geral
 
-Objetivo do sistema:
+### 🎯 Objetivo do sistema
 
-- Capturar atos normativos no site da Receita Federal.
-- Enviar os dados para uma API RESTful.
-- Persistir em banco SQL.
-- Implementar CRUD.
-- Registrar logs de execução do RPA.
-- Expor endpoint de dashboard com dados agregados.
-- Proteger endpoints sensíveis com JWT.
+- Capturar atos normativos no site da Receita Federal  
+- Enviar os dados para uma API RESTful  
+- Persistir em banco SQL  
+- Implementar CRUD completo  
+- Registrar logs de execução do RPA  
+- Expor endpoint de dashboard com dados agregados  
+- Proteger endpoints sensíveis com JWT  
 
 ---
 
 ## 2) Arquitetura
 
-A aplicação está organizada por camadas:
+A aplicação está organizada em camadas:
 
-- `routers/`: definição dos endpoints HTTP.
-- `services/`: regras de negócio e integração entre módulos.
-- `models/`: mapeamento ORM (SQLAlchemy).
-- `schemas/`: contratos de entrada/saída (Pydantic).
-- `database/`: sessão, engine e base declarativa.
-- `core/`: autenticação, configuração e scheduler.
-- `rpa/`: automação Selenium para coleta.
+- `routers/` → definição dos endpoints HTTP  
+- `services/` → regras de negócio e integração entre módulos  
+- `models/` → mapeamento ORM (SQLAlchemy)  
+- `schemas/` → contratos de entrada/saída (Pydantic)  
+- `database/` → sessão, engine e base declarativa  
+- `core/` → autenticação, configuração e scheduler  
+- `rpa/` → automação Selenium para coleta  
 
-### Separação entre RPA e API
+### 🔄 Separação entre RPA e API
 
-- O RPA coleta os dados no site externo.
-- O envio para persistência acontece pela API (`/atos/batch`), autenticado por JWT.
-- A API centraliza validação, deduplicação, persistência e logs.
-
----
-
-## 3) Stack Tecnológica
-
-- Python 3.11
-- FastAPI
-- SQLAlchemy 2.x
-- PostgreSQL 15
-- Selenium 4 + Chromium/Chromedriver
-- APScheduler
-- JWT com `python-jose`
-- Docker / Docker Compose
+- O RPA coleta os dados no site externo  
+- O envio para persistência acontece pela API (`/atos/batch`), autenticado por JWT  
+- A API centraliza validação, deduplicação, persistência e logs  
 
 ---
 
-## 4) Funcionalidades
+## 3) 🧰 Stack Tecnológica
 
-- Coleta automatizada de atos normativos.
-- Inserção em lote com deduplicação por constraint única.
-- CRUD de atos.
-- Exclusão lógica com `deleted_at`.
-- Dashboard com agregação por órgão e tipo.
-- Execução manual e agendada do RPA.
-- Logs de execução consultáveis por endpoint.
-- Proteção JWT em rotas sensíveis.
+- Python 3.11  
+- FastAPI  
+- SQLAlchemy 2.x  
+- PostgreSQL 15  
+- Selenium 4 + Chromium/Chromedriver  
+- APScheduler  
+- JWT com `python-jose`  
+- Docker / Docker Compose  
 
 ---
 
-## 5) Estrutura do Projeto
+## 4) ⚙ Funcionalidades
+
+- Coleta automatizada de atos normativos  
+- Inserção em lote com deduplicação por constraint única  
+- CRUD de atos  
+- Exclusão lógica com `deleted_at`  
+- Dashboard com agregação por órgão e tipo  
+- Execução manual e agendada do RPA  
+- Logs de execução consultáveis por endpoint  
+- Proteção JWT em rotas sensíveis  
+
+---
+
+## 5) 📂 Estrutura do Projeto
 
 ```text
 backend/app/
@@ -111,22 +114,29 @@ backend/app/
   Dockerfile
   docker-compose.yml
 ```
----
-
-## 6) Pré-requisitos
-Com Docker (recomendado)
-Docker
-Docker Compose
-Sem Docker
-Python 3.11+
-PostgreSQL
-Chromium e Chromedriver instalados e compatíveis
 
 ---
 
-## 7) Variáveis de Ambiente
-Crie um .env com os campos abaixo (ajuste valores conforme ambiente):
-```
+## 6) 🧩 Pré-requisitos
+
+### 🐳 Com Docker (Recomendado)
+
+- Docker  
+- Docker Compose  
+
+### 💻 Sem Docker
+
+- Python 3.11+  
+- PostgreSQL  
+- Chromium e Chromedriver instalados e compatíveis  
+
+---
+
+## 7) 🔐 Variáveis de Ambiente
+
+Crie um arquivo `.env`:
+
+```env
 SECRET_KEY=sua_chave_jwt_forte
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -144,58 +154,82 @@ POSTGRES_DB=rpa_db
 
 ---
 
-## 8) Como Executar
-Docker
-No diretório backend/app:
-```
+## 8) ▶ Como Executar
+
+### 🐳 Docker
+
+No diretório `backend/app`:
+
+```bash
 docker compose up --build
 ```
+
 Acesse:
 
-API: http://localhost:8000
-Swagger: http://localhost:8000/docs
+- API: http://localhost:8000  
+- Swagger: http://localhost:8000/docs  
 
-Local (sem Docker)
-```
+---
+
+### 💻 Local (sem Docker)
+
+```bash
 pip install -r backend/app/requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
----
-
-## 9) Fluxo da Solução (RPA -> API -> Banco)
-1. O RPA autentica em /auth/login.
-2. Coleta os atos normativos via Selenium.
-3. Formata os dados no payload da API.
-4. Envia lote para /atos/batch com token Bearer.
-5. API valida com Pydantic.
-6. Serviço salva em lote com ON CONFLICT DO NOTHING.
-7. API grava log da execução em rpa_logs.
 
 ---
 
-## 10) Autenticação JWT
-A autenticação usa OAuth2PasswordBearer com tokenUrl=/auth/login.
+## 9) 🔄 Fluxo da Solução (RPA → API → Banco)
 
-Login
+1. O RPA autentica em `/auth/login`  
+2. Coleta os atos normativos via Selenium  
+3. Formata os dados no payload da API  
+4. Envia lote para `/atos/batch` com token Bearer  
+5. API valida com Pydantic  
+6. Serviço salva em lote com `ON CONFLICT DO NOTHING`  
+7. API grava log da execução em `rpa_logs`  
+
+---
+
+## 10) 🔑 Autenticação JWT
+
+A autenticação utiliza `OAuth2PasswordBearer` com:
+
 ```
+tokenUrl=/auth/login
+```
+
+### 📥 Login
+
+```http
 POST /auth/login
 Content-Type: application/x-www-form-urlencoded
 ```
-Body:
 
-- username
-- password
+**Body:**
 
-Resposta:
 ```
+username
+password
+```
+
+**Resposta:**
+
+```json
 {
   "access_token": "jwt_token",
   "token_type": "bearer"
 }
 ```
-Uso do token
-Enviar no header:
-```
+
+---
+
+### 📤 Uso do Token
+
+Enviar no header das requisições protegidas:
+
+```http
 Authorization: Bearer <access_token>
 ```
 
