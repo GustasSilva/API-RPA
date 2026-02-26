@@ -2,23 +2,21 @@
 
 API em **FastAPI** integrada com um robô **RPA (Selenium)** para capturar atos normativos no portal da Receita Federal, enviar os dados via HTTP, persistir em **PostgreSQL**, oferecer **CRUD**, **dashboard agregado**, **logs de execução** e autenticação **JWT**.
 
----
-
 ## 📚 Sumário
 
-1. Visão Geral  
-2. Arquitetura  
-3. Stack Tecnológica  
-4. Funcionalidades  
-5. Estrutura do Projeto  
-6. Pré-requisitos  
-7. Variáveis de Ambiente  
-8. Como Executar  
-9. Fluxo da Solução (RPA → API → Banco)  
-10. Autenticação JWT  
-11. Endpoints  
-12. Modelo de Dados  
-13. Logs  
+1. [Visão Geral](#1-visão-geral)
+2. [Arquitetura](#2-arquitetura)
+3. [Stack Tecnológica](#3--stack-tecnológica)
+4. [Funcionalidades](#4--funcionalidades)
+5. [Estrutura do Projeto](#5--estrutura-do-projeto)
+6. [Pré-requisitos](#6--pré-requisitos)
+7. [Variáveis de Ambiente](#7--variáveis-de-ambiente)
+8. [Como Executar](#8--como-executar)
+9. [Fluxo da Solução (RPA → API → Banco)](#9--fluxo-da-solução-rpa--api--banco)
+10. [Autenticação JWT](#10--autenticação-jwt)
+11. [Endpoints](#11-endpoints)
+12. [Modelo de Dados](#12-modelo-de-dados)
+13. [Logs](#13-logs)
 
 ---
 
@@ -26,13 +24,13 @@ API em **FastAPI** integrada com um robô **RPA (Selenium)** para capturar atos 
 
 ### 🎯 Objetivo do sistema
 
-- Capturar atos normativos no site da Receita Federal  
-- Enviar os dados para uma API RESTful  
-- Persistir em banco SQL  
-- Implementar CRUD completo  
-- Registrar logs de execução do RPA  
-- Expor endpoint de dashboard com dados agregados  
-- Proteger endpoints sensíveis com JWT  
+- Capturar atos normativos no site da Receita Federal
+- Enviar os dados para uma API RESTful
+- Persistir em banco SQL
+- Implementar CRUD completo
+- Registrar logs de execução do RPA
+- Expor endpoint de dashboard com dados agregados
+- Proteger endpoints sensíveis com JWT
 
 ---
 
@@ -40,45 +38,45 @@ API em **FastAPI** integrada com um robô **RPA (Selenium)** para capturar atos 
 
 A aplicação está organizada em camadas:
 
-- `routers/` → definição dos endpoints HTTP  
-- `services/` → regras de negócio e integração entre módulos  
-- `models/` → mapeamento ORM (SQLAlchemy)  
-- `schemas/` → contratos de entrada/saída (Pydantic)  
-- `database/` → sessão, engine e base declarativa  
-- `core/` → autenticação, configuração e scheduler  
-- `rpa/` → automação Selenium para coleta  
+- `routers/` → definição dos endpoints HTTP
+- `services/` → regras de negócio e integração entre módulos
+- `models/` → mapeamento ORM (SQLAlchemy)
+- `schemas/` → contratos de entrada/saída (Pydantic)
+- `database/` → sessão, engine e base declarativa
+- `core/` → autenticação, configuração e scheduler
+- `rpa/` → automação Selenium para coleta
 
 ### 🔄 Separação entre RPA e API
 
-- O RPA coleta os dados no site externo  
-- O envio para persistência acontece pela API (`/atos/batch`), autenticado por JWT  
-- A API centraliza validação, deduplicação, persistência e logs  
+- O RPA coleta os dados no site externo
+- O envio para persistência acontece pela API (`/atos/batch`), autenticado por JWT
+- A API centraliza validação, deduplicação, persistência e logs
 
 ---
 
 ## 3) 🧰 Stack Tecnológica
 
-- Python 3.11  
-- FastAPI  
-- SQLAlchemy 2.x  
-- PostgreSQL 15  
-- Selenium 4 + Chromium/Chromedriver  
-- APScheduler  
-- JWT com `python-jose`  
-- Docker / Docker Compose  
+- Python 3.11
+- FastAPI
+- SQLAlchemy 2.x
+- PostgreSQL 15
+- Selenium 4 + Chromium/Chromedriver
+- APScheduler
+- JWT com `python-jose`
+- Docker / Docker Compose
 
 ---
 
 ## 4) ⚙ Funcionalidades
 
-- Coleta automatizada de atos normativos  
-- Inserção em lote com deduplicação por constraint única  
-- CRUD de atos  
-- Exclusão lógica com `deleted_at`  
-- Dashboard com agregação por órgão e tipo  
-- Execução manual e agendada do RPA  
-- Logs de execução consultáveis por endpoint  
-- Proteção JWT em rotas sensíveis  
+- Coleta automatizada de atos normativos
+- Inserção em lote com deduplicação por constraint única
+- CRUD de atos
+- Exclusão lógica com `deleted_at`
+- Dashboard com agregação por órgão e tipo
+- Execução manual e agendada do RPA
+- Logs de execução consultáveis por endpoint
+- Proteção JWT em rotas sensíveis
 
 ---
 
@@ -128,13 +126,25 @@ backend/app/
 
 - Python 3.11+  
 - PostgreSQL  
-- Chromium e Chromedriver instalados e compatíveis  
+- Google Chrome instalado (ou Chromium compatível)  
 
 ---
 
 ## 7) 🔐 Variáveis de Ambiente
 
-Crie um arquivo `.env`:
+O projeto utiliza arquivos de ambiente separados por contexto de execução:
+
+- `.env.local` → execução local (Windows / venv)  
+- `.env.docker` → execução com Docker Compose  
+
+Também é recomendado versionar exemplos:
+
+- `.env.local.example`  
+- `.env.docker.example`  
+
+---
+
+### 📁 `.env.local` (execução local)
 
 ```env
 SECRET_KEY=sua_chave_jwt_forte
@@ -144,13 +154,41 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin123
 
-DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/rpa_db
+DATABASE_URL=postgresql+psycopg2://postgres:admin@localhost:5432/rpa_receita
 API_BASE_URL=http://localhost:8000
 
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=rpa_db
+RUNNING_IN_DOCKER=false
 ```
+
+---
+
+### 🐳 `.env.docker` (execução com Docker)
+
+```env
+SECRET_KEY=sua_chave_jwt_forte
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
+
+DATABASE_URL=postgresql+psycopg2://postgres:admin@db:5432/rpa_receita
+API_BASE_URL=http://localhost:8000
+
+RUNNING_IN_DOCKER=true
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=admin
+POSTGRES_DB=rpa_receita
+```
+
+---
+
+### ⚠ Observações Importantes
+
+- Em execução local, o host do banco deve ser `localhost`.  
+- Em Docker, o host do banco deve ser `db` (nome do serviço no Compose).  
+- No `Settings` do Pydantic, manter `extra="ignore"` para evitar erro com variáveis extras do Postgres no mesmo `.env`.  
 
 ---
 
@@ -158,7 +196,7 @@ POSTGRES_DB=rpa_db
 
 ### 🐳 Docker
 
-No diretório `backend/app`:
+No diretório `backend/app`, configure o `docker-compose.yml` para usar `.env.docker` nos serviços `api` e `db`.
 
 ```bash
 docker compose up --build
@@ -173,8 +211,16 @@ Acesse:
 
 ### 💻 Local (sem Docker)
 
+Instale as dependências:
+
 ```bash
 pip install -r backend/app/requirements.txt
+```
+
+No PowerShell, defina o arquivo de ambiente local e suba a API:
+
+```powershell
+$env:ENV_FILE=".env.local"
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -186,9 +232,9 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 2. Coleta os atos normativos via Selenium  
 3. Formata os dados no payload da API  
 4. Envia lote para `/atos/batch` com token Bearer  
-5. API valida com Pydantic  
-6. Serviço salva em lote com `ON CONFLICT DO NOTHING`  
-7. API grava log da execução em `rpa_logs`  
+5. A API valida com Pydantic  
+6. O serviço salva em lote com `ON CONFLICT DO NOTHING`  
+7. A API grava log da execução em `rpa_logs`  
 
 ---
 
@@ -235,7 +281,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-## 11) Endpoints
+## 11) 📡 Endpoints
 
 ### 🔐 Auth
 
@@ -275,17 +321,17 @@ Authorization: Bearer <access_token>
 |--------|----------|------------|------------|
 | GET | `/logs/rpa` | ✅ | Lista logs de execução do RPA com paginação e filtros |
 
-#### Parâmetros recomendados:
+#### Parâmetros recomendados
 
-- `page` (default: 1)
-- `size` (default: 20)
-- `status` (opcional)
-- `data_inicio` (opcional)
-- `data_fim` (opcional)
+- `page` (default: 1)  
+- `size` (default: 20)  
+- `status` (opcional)  
+- `data_inicio` (opcional)  
+- `data_fim` (opcional)  
 
 ---
 
-## 12) Modelo de Dados
+## 12) 🗂 Modelo de Dados
 
 ### 🗂 Tabela `atos`
 
@@ -322,7 +368,7 @@ uq_ato_unico (numero_ato, publicacao, orgao_unidade)
 
 ---
 
-## 13) Logs
+## 13) 📊 Logs
 
 Cada execução de inserção em lote registra:
 
