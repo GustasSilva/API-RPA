@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -13,17 +14,19 @@ URL = "http://normas.receita.fazenda.gov.br/sijut2consulta/consulta.action"
 
 def coletar_atos():
     options = webdriver.ChromeOptions()
-    options = webdriver.ChromeOptions()
-    options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
 
-    driver = webdriver.Chrome(
-        service=Service("/usr/bin/chromedriver"),
-        options=options
-    )
+    running_in_docker = os.getenv("RUNNING_IN_DOCKER", "false").lower() == "true"
+
+    if running_in_docker:
+        options.binary_location = "/usr/bin/chromium"
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=options)
+    else:
+        # Windows/local: deixa o Selenium Manager resolver o driver automaticamente
+        driver = webdriver.Chrome(options=options)
 
     atos = []
 

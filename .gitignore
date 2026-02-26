@@ -9,9 +9,12 @@ __pycache__/
 *.pyc
 
 # segredos
-.env
-*.env
-backend/.env
+.env.local
+*.env.local
+backend/.env.local
+.env.docker
+*.env.docker
+backend/.env.docker
 
 # IDE/SO
 .vscode/
