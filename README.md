@@ -152,9 +152,9 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD=admin
 
-DATABASE_URL=postgresql+psycopg2://postgres:admin@localhost:5432/rpa_receita
+DATABASE_URL=postgresql+psycopg2://user:pass@localhost:5432/dbname
 API_BASE_URL=http://localhost:8000
 
 RUNNING_IN_DOCKER=false
@@ -170,16 +170,16 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD=admin
 
-DATABASE_URL=postgresql+psycopg2://postgres:admin@db:5432/rpa_receita
+DATABASE_URL=postgresql+psycopg2://user:pass@db:5432/dbname
 API_BASE_URL=http://localhost:8000
 
 RUNNING_IN_DOCKER=true
 
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=admin
-POSTGRES_DB=rpa_receita
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=dbname
 ```
 
 ---
